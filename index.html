@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday, Agrani! ❤️</title>
+  <style>
+    /* ---------- Base ---------- */
+    :root{
+      --accent: #ff4d6d;
+      --soft: #ffeef4;
+      --white: #ffffff;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; padding:0;
+      height:100%;
+      font-family: "Poppins", system-ui, Arial, sans-serif;
+      background: url("images/flowers-bg.jpg") no-repeat center center/cover;
+      color: var(--white);
+      overflow-x:hidden;
+    }
+    button{
+      border:0; outline:0; cursor:pointer; padding:14px 22px;
+      border-radius:12px; font-weight:700; font-size:16px;
+      background: var(--accent); color:#fff;
+      box-shadow:0 8px 24px rgba(255,77,109,.35);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    button:hover{ transform: translateY(-2px); box-shadow:0 12px 30px rgba(255,77,109,.45) }
+
+    /* Snowfall */
+    .snowfield{ position:fixed; inset:0; pointer-events:none; z-index:1 }
+    .flake{ position:absolute; top:-2vh; border-radius:50%; background:#fff; opacity:.9;
+      animation-name: fall, sway; animation-timing-function: linear, ease-in-out; }
+    @keyframes fall { to { transform: translateY(110vh) } }
+    @keyframes sway { 0%{ margin-left:-10px } 50%{ margin-left:10px } 100%{ margin-left:-10px } }
+
+    /* Layout */
+    .stage{ position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .wrap{ position:relative; z-index:2; text-align:center; max-width:960px; padding:24px; background: rgba(0,0,0,0.4); border-radius:16px; }
+
+    /* Title */
+    .title{ font-size: clamp(42px, 7vw, 86px); margin:16px 0; text-shadow:0 4px 20px rgba(0,0,0,.6); color:#ffccd5; }
+    .subtitle{ font-size:20px; font-weight:500; }
+
+    /* Heart */
+    .heart{ font-size:120px; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{ transform: scale(1)} 50%{ transform: scale(1.2)} }
+
+    /* Wish Box */
+    .wish{ font-size:20px; line-height:1.7; margin-top:20px; padding:20px; border-radius:16px; background: rgba(255,255,255,0.15); }
+
+    /* Audio bar */
+    .audio-bar{ margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap }
+  </style>
+</head>
+<body>
+  <!-- Snow -->
+  <div class="snowfield" id="snowfield"></div>
+
+  <!-- STEP 1 -->
+  <section class="stage" id="step1">
+    <div class="wrap">
+      <h1 class="title">🎉 Happy Birthday, Agrani ❤️</h1>
+      <p class="subtitle">Meri pyaari Cute Mumfali 💖</p>
+      <div class="heart">❤️</div>
+      <button id="toStep2">Next ✨</button>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="stage" id="step2" style="display:none">
+    <div class="wrap">
+      <h2 class="title">🌸 From My Heart 🌸</h2>
+      <div class="wish" id="wishBox"></div>
+      <div class="audio-bar">
+        <audio id="song" src="audio/favorite-song.mp3" preload="metadata" controls></audio>
+        <button id="muteBtn">Mute/Unmute 🔊</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const $ = sel => document.querySelector(sel);
+    const show = id => {
+      document.querySelectorAll('.stage').forEach(s=>s.style.display='none');
+      document.getElementById(id).style.display='flex';
+    };
+
+    // Snow
+    const snowfield = $('#snowfield');
+    function makeSnow(){
+      snowfield.innerHTML='';
+      for(let i=0;i<80;i++){
+        const f=document.createElement('span');
+        f.className='flake';
+        const size=Math.random()*6+3;
+        f.style.width=f.style.height=size+'px';
+        f.style.left=Math.random()*100+'vw';
+        const dur=Math.random()*6+6;
+        f.style.animationDuration=`${dur}s, ${Math.random()*4+3}s`;
+        f.style.animationDelay=`${Math.random()*5}s, 0s`;
+        snowfield.appendChild(f);
+      }
+    }
+    makeSnow();
+
+    // Wish text typing
+    const wishText = `Dear Agrani, 💌
+
+Tum meri zindagi ka sabse khoobsurat hissa ho. Har din tumhari muskaan meri rooh ko roshan karti hai. 
+Aaj ke din, main bas itna chahta hoon ki tumhari zindagi hamesha khushiyo, pyaar aur safalta se bhari rahe. 💖
+
+Happy Birthday, meri jaan! 🎂🥳 
+Always yours — in every season, in every snowfall, in every heartbeat. ❤️`;
+
+    function typeWish(el, text, speed=30){
+      el.innerHTML='';
+      let i=0;
+      const timer=setInterval(()=>{
+        el.innerHTML += text[i]==='\n' ? '<br/>' : text[i];
+        i++;
+        if(i>=text.length) clearInterval(timer);
+      }, speed);
+    }
+
+    // Buttons
+    $('#toStep2').addEventListener('click', ()=>{
+      show('step2');
+      makeSnow();
+      typeWish($('#wishBox'), wishText, 28);
+      try{ $('#song').play(); }catch(e){}
+    });
+
+    $('#muteBtn').addEventListener('click', ()=>{ $('#song').muted=!$('#song').muted; });
+  </script>
+</body>
+</html>
